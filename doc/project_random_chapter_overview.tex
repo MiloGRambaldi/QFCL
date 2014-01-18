@@ -1,0 +1,55 @@
+% ----------------------------------------------------------------------------------------------
+\newpage
+\chapter{Overview}
+The QFCL Random C++ library covers routines used for generating samples from various probability distribution.
+
+
+\section{\index{Engines}Engines}
+Engines generate random numbers with certain properties. The C++ standard library, the BOOST libraries provide various random
+number engines. The engines in QFCL adhere to the same interfaces and are thus interoperable with C++ and BOOST random related routines. 
+
+The Engines provided in QFCL have two major benefits:
+\begin{itemize}
+\item They are thread safe.
+\item These engines can generate parallel independent random streams.
+\end{itemize}
+Both features are requires for efficient parallel random number generation and in parallel Monte Carlo engines.
+
+\subsection{Interface}
+Engines provide the following interface
+\begin{itemize}
+\item operator() for generating random numbers.
+\item max() that returns the higher random number that can be generated.
+\item min() that returns the lowest random number that can be generated.
+\end{itemize}
+
+\section{\index{Distribution}Distribution}
+todo
+
+
+\section{Generating variates}
+todo
+
+\begin{lstlisting}[ language=C++,
+                    caption=Creating Vanilla call price sampler,
+                    emph={gbm_npv_vanilla_call},
+                    emphstyle=\bf\color{blue}]
+    
+    typedef qfcl::random::cpp_rand ENG;
+    typedef qfcl::random::gbm_npv_vanilla_call DIST;
+    typedef qfcl::random::variate_generator< ENG, DIST > RNG;
+    
+    double S0 = 100;
+    double vol = 0.25;
+    double yield = 0.05;
+    double r = 0.05; 
+    double strike = 110;
+    double t = 1.5;
+    
+    DIST call( S0, vol, yield, r, strike, t );
+    ENG eng;
+    RNG rng(eng,call);
+    
+    for (int i=0;i<1000; ++i) 
+    	std::cout << rng() << "\n";
+\end{lstlisting}
