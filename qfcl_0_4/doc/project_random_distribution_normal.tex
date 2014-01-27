@@ -1,0 +1,88 @@
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Description}
+The distributions normal\_xxx\_distribution are used to generate samples
+from standard normal distributions. The xxx keyword indicate which method it uses to generate normal samples.
+
+\begin{tabular}{ | l | l | }
+  \hline                        
+  distribution & method \\
+  \hline                        
+  normal\_box\_muller & Box Muller transform.\\
+  normal\_box\_muller\_polar & Box Muller transform, polar variant.\\
+  normal\_inversion & Using the inverse cumulative distribution function.\\
+  \hline  
+\end{tabular}
+
+
+\subsection{normal\_box\_muller}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/normal_box_muller.hpp>
+
+// Types
+template<class RealType = double> class normal_box_muller_distribution;
+
+// convenience typedef
+typedef normal_box_muller_distribution<double> normal_box_muller;
+\end{lstlisting}
+
+
+
+
+\subsection{normal\_box\_muller\_polar}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/normal_box_muller_polar.hpp>
+
+// Types
+template<class RealType = double> class normal_box_muller_polar_distribution;
+
+// convenience typedef
+typedef normal_box_muller__polar_distribution<double> normal_box_muller_polar;
+\end{lstlisting}
+
+
+\subsection{normal\_inversion}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/normal_inversion.hpp>
+
+// Types
+template<class RealType = double> class normal_inversion_distribution;
+
+// convenience typedef
+typedef normal_inversion_distribution<double> normal_inversion;
+\end{lstlisting}
+
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Example}
+\begin{lstlisting}[language=C++,caption=Sample C++ code: function interface,numbers=left]
+#include <qfcl/random/engine/mersene_twister.hpp>
+#include <qfcl/random/distribution/normal_inversion.hpp>
+#include <qfcl/random/variate_generator.hpp>
+
+int main()
+{
+    typedef qfcl::random::cpp_rand ENG;
+    typedef qfcl::random::normal_inversion DIST;
+    typedef qfcl::random::variate_generator< ENG, DIST > RNG;
+    
+    DIST n;
+    ENG eng;
+    RNG rng(eng,n);
+    
+    for (int i=0;i<1000; ++i) 
+    	std::cout << rng() << "\n";
+    return 0;
+}
+\end{lstlisting}
+

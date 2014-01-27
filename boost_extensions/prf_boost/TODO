@@ -1,0 +1,57 @@
+
+
+TODO:
+----
+o Documentation
+ - !!!
+o tests (use the Boost.Test framework)
+ - STARTED:  Concept checkers
+ - Engine and MicroURNG methods
+   o the existing boost test_generator.ipp is a good start, but
+     we need more:
+     + increments that wrap and that run out
+     + decrements/replay(?)
+     + seek/tell
+     + Engine(k)/seed(k)/getseed()
+     + concept checker
+     + kats for default-initialized engines.
+ - test philox with and without hardware mulhilo
+ - test AES and ARS on a big-endian architecture.
+ - DONE "real" kat tests
+ - DONE test AES and ARS with and without AESNI
+o performance
+ - PRFs should be fast.  Are they?
+   + aes-sw is only about 0.75x as fast as ars-sw.  Why?  Don't care?
+   + ars-sw is about 0.6x as fast as OpenSSL (54 vs 30 cpB).  Don't care?
+ - why is IdentityCBRNG<4, uint32_t> so slow in random_speed.cpp?
+   Are the other 4x32 bijections similarly affected?
+ - threefry2x64-13 is astoundingly fast (1.3 cpB), but
+   threefry2x64-20 is disappointingly slow (8.25 cpB).  Why??
+ - DONE is there a timing harness in Boost.Random?
+o portability
+ - big-endian, especially sw ARS and AES and philox
+ - implement mulhi for some other architecture.
+ - other compilers? (icpc seems to work)
+o misc
+ - a replay/decrement/rollback/backup method for counter_based_engines?
+ - compile-time errors for use of aes<__m128i>::{domain,range}_array_type
+ - aes_config.hpp - wrong name?  wrong location?  sketchy contents.
+ - bjam 
+ - DONE call them "Pseudo-Random Functions".  Abbreviate PRF
+ - DONE change ctr_type to something else... block_type?  data_type?  domain_type?
+ - DONE why is NVALS a template arg to counter_based_urng?  Why not a runtime constructor arg??
+   What if the programmer doesn't know how many he's going to need at compile time,
+   but the program itself knows at runtime?
+ - DONE implement Threefry
+ - DONE boost-style directory structure.
+ - DONE boost-style include guards
+ - DONE use namespace boost::random
+ - DONE change name from MicroURNG to counted_urng?  counting_urng? counter_based_urng?
+ - DONE change name from Engine to counted_engine? counting_engine, counter_based_engine?
+ - DONE don't put things with non-trivial constructs (sw128, hw128) in unions.
+ - DONE use more of the BOOST_RANDOM_DETAIL macros in Engine.
+ - DONE Boost naming conventions:
+   #define ALL_CAPS
+   template <typename Initialcapital>
+   struct all_lower_case_with_underscores{
+   };

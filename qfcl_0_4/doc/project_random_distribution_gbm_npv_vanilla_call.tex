@@ -1,0 +1,76 @@
+\subsection{gbm\_at\_fixed\_time}
+\sublibfunction{Description}
+Sample from a fixed time distribution of geometric Brownian motion. 
+
+todo
+
+\subsection{gbm\_interval\_high}
+todo
+\subsection{gbm\_interval\_low}
+todo
+\subsection{gbm\_first\_hitting\_time}
+todo
+
+\subsection{gbm\_npv\_vanilla\_call}
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include file
+#include <qfcl/random/distribution/gbm_npv_vanilla_call.hpp>
+
+// Types
+template<class RealType = double> 
+class gbm_vanilla_call_distribution;
+
+// convenience typedef
+typedef gbm_vanilla_call_distribution<double> gbm_vanilla_call;
+
+\end{lstlisting}
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Description}
+The distribution gbm\_npv\_vanilla\_call\_distribution is used to generate samples
+from a vanilla call option price. The underlying process is assumed to be a geometric Brownian Motion. 
+The prices are npv-ed (net present valued).
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Example}
+\begin{lstlisting}[language=C++,caption=Sample C++ code: function interface,numbers=left]
+#include <qfcl/random/engine/mersene_twister.hpp>
+#include <qfcl/random/distribution/gbm_npv_vanilla_call.hpp>
+#include <qfcl/random/variate_generator.hpp>
+
+int main()
+{
+    typedef qfcl::random::cpp_rand ENG;
+    typedef qfcl::random::gbm_npv_vanilla_call DIST;
+    typedef qfcl::random::variate_generator< ENG, DIST > RNG;
+    
+    double S0 = 100;
+    double vol = 0.25;
+    double yield = 0.05;
+    double r = 0.05; 
+    double strike = 110;
+    double t = 1.5;
+    
+    DIST call( S0, vol, yield, r, strike, t );
+    ENG eng;
+    RNG rng(eng,call);
+    
+    for (int i=0;i<1000; ++i) 
+    	std::cout << rng() << "\n";
+    return 0;
+}
+\end{lstlisting}
+
+
+
+\subsection{gbm\_npv\_vanilla\_put}
+todo

@@ -1,0 +1,121 @@
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Description}
+The distribution uniform\_0ex\_1ex\_distribution and it's variants are used to generate samples
+from uniform distributions. The ex and in keyword indicate exclusion of inclusion of 0 and/or 1 in the generated 
+samples.
+
+\begin{tabular}{ | l | l | }
+  \hline
+  distribution & range \\
+  \hline                        
+  uniform\_0ex\_1ex & $(0,1)$ \\
+  uniform\_0in\_1ex & $[0,1)$ \\
+  uniform\_0ex\_1in & $(0,1]$ \\
+  uniform\_0in\_1in & $[0,1]$ \\
+  \hline  
+\end{tabular}
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\subsection{uniform\_0ex\_1ex}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/uniform_0ex_1ex.hpp>
+
+// Types
+template<class RealType = double>  class uniform_0ex_1ex_distribution;
+
+// convenience typedef
+typedef uniform_0ex_1ex_distribution <double> uniform_0ex_1ex;
+\end{lstlisting}
+
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\subsection{uniform\_0ex\_1in}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/uniform_0ex_1in.hpp>
+
+// Types
+template<class RealType = double>  class uniform_0ex_1in_distribution;
+
+// convenience typedef
+typedef uniform_0ex_1in_distribution <double> uniform_0ex_1in;
+\end{lstlisting}
+
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\subsection{uniform\_0in\_1ex}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/uniform_0in_1ex.hpp>
+
+// Types
+template<class RealType = double>  class uniform_0in_1ex_distribution;
+
+// convenience typedef
+typedef uniform_0in_1ex_distribution <double> uniform_0in_1ex;
+\end{lstlisting}
+
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\subsection{uniform\_0in\_1in}
+\sublibfunction{Synopsis}
+\begin{lstlisting}[language=C++]
+// Include files
+#include <qfcl/random/distribution/uniform_0in_1in.hpp>
+
+// Types
+template<class RealType = double>  class uniform_0in_1in_distribution;
+
+// convenience typedef
+typedef uniform_0in_1in_distribution <double> uniform_0in_1in;
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+% ------------------------------------------------------------------------------------------------
+%
+% ------------------------------------------------------------------------------------------------
+\sublibfunction{Example}
+\begin{lstlisting}[language=C++,caption=Sample C++ code: function interface,numbers=left]
+#include <qfcl/random/engine/mersene_twister.hpp>
+#include <qfcl/random/distribution/uniform_0in_1ex.hpp>
+#include <qfcl/random/variate_generator.hpp>
+
+int main()
+{
+    typedef qfcl::random::cpp_rand ENG;
+    typedef qfcl::random::uniform_0in_1ex DIST;
+    typedef qfcl::random::variate_generator< ENG, DIST > RNG;
+    
+    DIST u;
+    ENG eng;
+    RNG rng(eng,call);
+    
+    for (int i=0;i<1000; ++i) 
+    	std::cout << rng() << "\n";
+    return 0;
+}
+\end{lstlisting}
+
