@@ -138,6 +138,12 @@ add_subdirectory( build/CMake )
 add_custom_target( README SOURCES "README.txt" "../README.md" )
 
 # ----------------------------------------------
+# add LICENSE
+# ----------------------------------------------
+
+add_custom_target( LICENSE SOURCES "LICENSE.txt" )
+
+# ----------------------------------------------
 # CMake testing
 # ----------------------------------------------
 
