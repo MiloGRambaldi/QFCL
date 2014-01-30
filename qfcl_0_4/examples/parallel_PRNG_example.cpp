@@ -35,6 +35,7 @@ namespace po = boost::program_options;
 
 // could be any linear_generator
 typedef qfcl::random::mt19937 MT19937_Engine;
+typedef MT19937_Engine::UIntType UIntType;
 // whether Engine supports peek
 static const bool Engine_has_peek		= true;
 // whether Engine is reversible
@@ -75,6 +76,7 @@ int main(int argc, char * argv[])
 
 	long num_simulations, num_streams;
 	long long num_consumed, step_size;
+	UIntType seed;
 	
 	/* Handle command line options. */
 
@@ -86,12 +88,14 @@ int main(int argc, char * argv[])
 
 	po::options_description optional_params("Optional parameters");
 	optional_params.add_options()
-		("simulations,s", po::value<long>(&num_simulations) -> default_value(default_num_simulations),
+		("simulations,n", po::value<long>(&num_simulations) -> default_value(default_num_simulations),
 		 "number of simulations in the Monte Carlo")
 		("max,m", po::value<long long>(&num_consumed) -> default_value(default_num_consumed),
 		 "maximum # of random numbers consumed by one simulation")
 		("streams,N", po::value<long>(&num_streams) -> default_value(default_num_streams),
-		 "number of streams of pseudo-random numbers");
+		 "number of streams of pseudo-random numbers")
+		("seed,s", po::value<UIntType>(&seed),
+		 "pseudo-random number generator seed");
 
 	po::options_description command_line_options;
 	command_line_options.add(generic_options).add(optional_params);
@@ -122,6 +126,7 @@ int main(int argc, char * argv[])
 	step_size = ((num_simulations + num_streams - 1) / num_streams) * num_consumed;
 
 	MT19937_Engine qfcl_engine;
+
 	MT19937_Engine::result_type* qfcl_result;
 
 	tie(time_taken, qfcl_result) = setup_parallel_PRNG(qfcl_engine, num_streams, step_size);
@@ -131,6 +136,13 @@ int main(int argc, char * argv[])
 
 	boost::random::mt19937 boost_engine;
 	boost::random::mt19937::result_type* boost_result;
+
+	// set the seed if given
+	if (vm.count("seed"))
+	{
+		boost_engine.seed(seed);
+		qfcl_engine.seed(seed);
+	}
 
 	tie(time_taken, boost_result) = setup_parallel_PRNG(boost_engine, num_streams, step_size);
 

@@ -85,23 +85,28 @@ above parameters. On the author's system, the first run took 6190.3 seconds
 (1h43m10.3s) to set up the MC using boost's MT19937, versus 3714.2 seconds
 (1h01m54.2s) using the QFCL MT19337. On the second run (using a different
 seed to emphasize that the jump matrix depends only on p), the it took 6381.4 
-seconds (1h46m21.4s) to set up using boost's MT19937, versus 2.3 seconds 
+seconds (1h46m21.4s) to set up using boost's MT19937, versus 1.7 seconds 
 using the QFCL MT19937 with the jump matrix already computed. We note that 
 the MT19937 is a precise (deterministic!) specification for pseudo-random 
 number generation, and thus the actual simulation will produce identical 
 results for both generators. 
 
+Any future parallel MC simulations with the same p value, will also take 
+approximately 1.7 seconds for QFCL, which is more than 3500 times as fast as
+a standard Mersenne Twister engine like boost's.
+
 Example Code
 ============
 
-See examples/README.txt for description of the example code. It demonstrates
-the usage of discard and related functionality. The included 
-examples/parallel_PRNG_example project implements the above numerical 
-example.
+There are two projects of particular interest in the examples folder. 
+linear_generator_example demonstrates the usage of discard and related 
+functionality (see the commented source code). The parallel_PRNG_example 
+project implements the above numerical example. Type parallel_PRNG_example -h
+for optional command line parameters.
 
-QFCL also includes performance tests. Of particular interest is the 
-EngineSpeed test which compares the speed of raw random number generation for
-various PRNGs. See test/README.txt.
+QFCL also includes performance tests, in the test folder. Of particular 
+interest is the EngineSpeed test which compares the speed of raw random 
+number generation for various PRNGs.
 
 Correctness
 ===========
