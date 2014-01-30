@@ -3,15 +3,12 @@ boost_extensions
 Copyright (C) 2012 James Hirschorn <James.Hirschorn@gmail.com>
 -----------------------------------------------------------------------------
 
-This is a packaging of three boost "extensions":
+This is a packaging of two boost "extensions":
 
 (1) John Salmon's prf_boost code, obtained from 
 http://thesalmons.org/john/random123/prf_boost/prf_boost.zip.
 
-(2) George van Venrooij's cartesian_product (2008), obtained from 
-http://www.organicvectory.com.
-
-(3) boost::tti from the boost/trunk (version 1.53).
+(2) boost::tti from the boost/trunk (version 1.53).
 
 The present version simply provides the source code, and nothing is built;
 however, these are all header only libraries. There is no CMakeLists file 
