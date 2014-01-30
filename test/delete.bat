@@ -1,6 +1,0 @@
-@echo OFF
-set TARGET_DIR=%~f1
-set TARGET_FILES=%2
-
-del "%TARGET_DIR%\%TARGET_FILES%"
-
