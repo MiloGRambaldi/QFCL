@@ -84,8 +84,8 @@ In our example code (see below) a Monte Carlo simulation is set up with the
 above parameters. On the author's system, the first run took 6190.3 seconds
 (1h43m10.3s) to set up the MC using boost's MT19937, versus 3714.2 seconds
 (1h01m54.2s) using the QFCL MT19337. On the second run (using a different
-seed to emphasize that the jump matrix depends only on p), the it took 6381.4 
-seconds (1h46m21.4s) to set up using boost's MT19937, versus 1.7 seconds 
+seed to emphasize that the jump matrix depends only on p), the it took 6190.8 
+seconds (1h43m10.8s) to set up using boost's MT19937, versus 1.7 seconds 
 using the QFCL MT19937 with the jump matrix already computed. We note that 
 the MT19937 is a precise (deterministic!) specification for pseudo-random 
 number generation, and thus the actual simulation will produce identical 
