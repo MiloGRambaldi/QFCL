@@ -1,0 +1,97 @@
+\documentclass[a4paper,11pt,oneside]{book}
+\usepackage{amsmath} %Never write a paper without using amsmath for its many new commands
+\usepackage{amssymb} %Some extra symbols
+\usepackage{makeidx} %If you want to generate an index, automatically
+\usepackage{graphicx} %If you want to include postscript graphicsfor example.
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{tocloft}		% fancy TOC
+\usepackage{fncychap}	% fancy Chapter title
+
+\makeindex
+  
+% -----------------------------------------------------------------------------------------
+% hyperlinks
+% -----------------------------------------------------------------------------------------
+\hypersetup{
+    colorlinks=false,       % false: boxed links; true: colored links
+    %linkbordercolor={204 204 204},
+    linkcolor=red,          % color of internal links
+    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+}
+
+% -----------------------------------------------------------------------------------------
+% support for chars like <>, used e.g. in #include <
+% -----------------------------------------------------------------------------------------
+\usepackage[T1]{fontenc} % for handeling chars like < >  etc
+
+% -----------------------------------------------------------------------------------------
+% page headers and footer style
+% -----------------------------------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% -----------------------------------------------------------------------------------------
+% titlepage
+% -----------------------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------------------
+% page margin formatting, less marging than default
+% -----------------------------------------------------------------------------------------
+\usepackage[lmargin=2.5cm,rmargin=2.5cm,tmargin=2.5cm,bmargin=2.5cm]{geometry}
+
+% -----------------------------------------------------------------------------------------
+% paragraph formatting
+% -----------------------------------------------------------------------------------------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+% -----------------------------------------------------------------------------------------
+% source code formatting settings
+% -----------------------------------------------------------------------------------------
+\usepackage{listings}
+\definecolor{sourcecode}{RGB}{255,255,255}
+\lstset{ %
+	basicstyle=\footnotesize,
+	frame=single,
+	captionpos=b,
+	breaklines=true,
+	backgroundcolor=\color{sourcecode}
+}
+
+% -----------------------------------------------------------------------------------------
+% libfunction 
+% -----------------------------------------------------------------------------------------
+\definecolor{libfunctionbg}{RGB}{192,192,192}
+\definecolor{sublibfunctionbg}{RGB}{255,255,255}
+\newcommand{\libfunction}[1] {\vspace{10 mm} \noindent \colorbox{libfunctionbg}{\parbox{\textwidth}{\Large\textbf{#1}}} }
+\newcommand{\sublibfunction}[1] {\vspace{10 mm} \par\noindent\colorbox{sublibfunctionbg}{\makebox[\textwidth][l]{\large\itshape\textbf{#1}}} }
+
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+
+% #######################################################
+
+\title{The Quant Finance Code Library: C++ Random}
+%\author{M.A. (Thijs) van den Berg}
+\date{\today}
+
+\begin{document}
+%\maketitle
+\input{./project_random_title_page.tex}
+\tableofcontents
+
+\mainmatter
+\input{project_random_chapters.tex}
+
+\backmatter
+\bibliographystyle{amsalpha} %The style you want to use for references.
+\bibliography{mr,refs} %The files containing all the articles and books you ever referenced.
+\printindex %Make an index AUTOMATICALLY
+
+\end{document} 

@@ -1,0 +1,45 @@
+% ----------------------------------------------------------------------------------------------
+\newpage
+\chapter{Tutorial}
+A tutorial that introduces the fundamental concepts required to use Qfcl.Random, 
+and shows how to use Qfcl.Random to develop simple programs. 
+
+
+\section{Headers and Namespaces}
+All the code in this library is inside namespace qfcl::random. You can to bring distribution names into scope perhaps with a using namespace qfcl::random; declaration, but it's recommended that you use declarations like using qfcl::random::normal\_inversion; 
+
+
+In order to generate samples from  a distribution some\_special\_distribution you will need to include either the
+header <qfcl/random/distributions/some\_special.hpp> or the "include everything" 
+header: <qfcl/random/distributions.hpp>.
+
+\begin{lstlisting}[language=C++,caption=Including a "single distribution" header]
+#include <qfcl/random/distributions/some_special.hpp>
+\end{lstlisting}
+
+
+\section{Distribution names and aliases}
+All distribution are defined as templates with the real type  as argument and have names ending with "\_distribution".
+E.g. the normal\_inversion\_distribution, is an distribution sampler that uses the inversion method to generate normal variates.
+
+\begin{lstlisting}[language=C++,caption=]
+// include file
+#include <qfcl/random/distributions/normal_inversion.hpp>
+
+// declaring a distribution
+qfcl::random::normal_inversion_distribution<float> my_dist;
+\end{lstlisting}
+
+The real type of distribution defaults to double, and all distributions have a typedef omitting the \_distribution in the name for the double 
+real type. The following declarations are all identical
+
+\begin{lstlisting}[language=C++,caption=]
+// verbose version
+qfcl::random::normal_inversion_distribution<double> my_dist;
+
+// using the default template type (double)
+qfcl::random::normal_inversion_distribution<> my_dist;
+
+// using the convenience typdef
+qfcl::random::normal_inversion my_dist;
+\end{lstlisting}

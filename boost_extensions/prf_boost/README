@@ -1,0 +1,252 @@
+This extension of the Boost Random library adds "Pseudo-Random
+Functions" (PRFs) as an alternative to conventional "Uniform Random
+Number Generators" and "Random Number Engines".  
+
+It is an incomplete draft, intended to start a conversation.
+It is not ready-to-use library.
+
+The case for using PRFs in Monte Carlo and statistical simulation is
+given in the paper, "Parallel Random Numbers -- As Easy as 1, 2, 3",
+by Salmon, Moraes, Dror & Shaw, in the Proceedings of SC'11:
+
+http://dl.acm.org/citation.cfm?doid=2063405
+also available at
+http://www.thesalmons.org/john/random123/papers/random123sc11.pdf
+
+PRFs have been known for many years, but either their advantages were
+unrecognized or they were thought to have poor performance with
+respect to conventional URNGs.  The paper shows that PRFs exist with
+excellent statistical properties, and highly desirable space and time
+characteristics.  Also, note that the terminology in the paper, is
+slightly different from that used here.  In the paper they're called
+"Counter Based Random Number Generators".
+
+PRFs are well-known in cryptography, but the PRFs here (except for
+AES) are *not* cryptographically strong.  Nevertheless, they have
+satisfied extensive tests of statistical quality and should satisfy
+the needs of Monte Carlo simulation and other fields that routinely
+use random numbers.
+
+PRFs are pure functions (functors in C++) with the property that they
+return "random" values, even when presented with highly regular inputs
+(see the paper for a discussion of how randomness is empirically
+established).  The user of a PRF assembles the input, calls the
+function and obtains a "random" result which can then be used in the
+same way as a value obtained from a conventional URNG or Engine.  In
+contrast, a conventional Random Number Engine has a much more limited
+API: the caller is restricted to seeding the engine, once and for all,
+and then repeatedly asking for the "next" random value.
+
+PRFs eliminate the sequential dependence inherent in conventional
+RNGs.  With a PRF, one can compute the "n-th" value in O(1) time,
+without stepping through earlier values.  In fact, with a PRF, the
+notion of an "n-th" value loses its significance.  One simply obtains
+a random value.  Eliminating sequential dependence can be especially
+useful for parallel, multi-threaded applications.  For example, one
+can assemble a PRF's input from application-level data, e.g., object
+id, voxel number, user-supplied seed value, timestep, iteration
+number, etc.  This kind of application data is unchanged when the
+application is parallelized, and is generally invariant as more or
+fewer threads become available.  The resulting random value is thus
+invariant to the parallelization as well.  This can be enormously
+helpful when correctness dictates that separate "parallel" threads
+should use the same "random" value, or when trying to reproduce
+results on different platforms with different levels of parallelism.
+
+Four PRFs are implemented: threfry, philox, ars and aes, each
+implemented in its own header file, e.g., boost/random/ars.hpp.
+
+The file boost/random/counter_based_urng.hpp implements the
+counter_based_urng adapter class, which creates a Uniform Random
+Number Generator from a PRF, allowing programmers to use the PRF APIs
+together with Boost or C++1x Random Number Distributions.
+
+The file boost/random/counter_based_engine.hpp implements the
+counter_based_engine adapter class, which creates a Uniform Random
+Number Engine from a PRF, allowing PRFs to be used with software that
+relies on the Uniform Random Engine concept.  For better or worse,
+wrapping a PRF in a counter_based_engine adapter completely obscures
+the PRF's API and reintroduces sequential dependence.
+
+The zip file also contains a copy of the candidate Boost Endian
+library copied from boost sandbox.  Endian-swapping is required by the
+AES engine on bigendian machines, and the library meets our needs.
+
+Concepts
+--------
+
+All PRFs have a domain_type and a range_type and with d a "permissible"
+object of the domain type, the expression:
+
+    prf(d)
+
+is of the range_type.  In many cases, every possible value of
+domain_type will be "permissible", but we leave open the possibility
+that the prf may place restrictions on the values of domain_type that
+produce "random" results.
+
+The values returned by the prf should be "random", a concept that
+is difficult to make both precise and achievable.  Roughly, for most
+sequences, including highly "regular" sequences, of distinct, permissible
+domain_type values, d1, d2, d3, ..., the sequence:
+
+    prf(d1), prf(d2), prf(d3), ...
+
+is statistically indistinguishable from a sequence of independent,
+uniformly distributed random variables sampling the range_type.  In
+most cases, the output of the prf will uniformly sample all possible
+values of the range_type, but we leave open the possibility that it
+may only sample a subset and that the output is only uniform over the
+subset.
+
+Keyable PRFs have a key_type, a corresponding constructor, and
+setkey() and getkey() member functions.
+
+Keyable PRFs constructed with different keys must also be statistically
+independent.  I.e., even for highly regular sequences of distinct
+(key, domain) pairs:
+
+   (k1, d1), (k2,d2), ...
+
+the sequence:
+
+    Prf(k1)(d1), Prf(k2)(d2), ...
+
+is statistically indistinguishable from a sequence of independent
+random uniformly distributed samples of the range_type
+
+Keyable PRFs may also be Seedable in which case they also have seed()
+member functions and corresponding constructors similar to those of
+Random Number Engines.  Seeding a PRF is equivalent to setting its key
+to some value corresponding to the output of sseq.generate().
+
+A PRF has a Countable Domain if its domain_type has member functions
+begin(), end(), and back() with semantics identical to that of
+boost::array<Uint, N> for some unsigned integral type Uint and some N.
+It must also have member functions domain_array_min() and
+domain_array_max() that specify the permissible domain values.  Any
+array, da, whose members, da[i], satisfy:
+
+     prf.domain_array_min() <= da[i] <= prf.domain_array_max[]
+
+must be "permissible".
+
+A PRF has an Integer Array Range if its range_type has member
+functions begin(), end(), and size() with semantics identical
+to boost::array<RangeInt, N>, for some integral type, RangeInt and
+constant N.  It must also have static constexpr member functions,
+range_array_min() and range_array_max() that specify the subset of
+range values sampled by the PRF.  For any sequence of
+permissible domain value, d1, d2, ..., the integers:
+
+    prf(d1)[i], prf(d2)[i]
+
+must be statistically indistinguishable from independent uniformly
+distributed RangeInts from range_array_min() up to and including
+range_array_max().
+
+If a PRF has a Countable Domain and an Integer Array Range, then:
+
+counter_based_urng<Prf> satisfies the requirements of a Uniform Random
+Number Generator.
+
+If, in addition, the PRF is Seedable, Streamable and Equality
+Comparable, then:
+
+counter_based_engine<Prf> satisfies the requirements of a Random Number
+Engine.
+
+
+A PRF is a Pseudo-Random Bijection if it is one-to-one and onto.  I.e.,
+if it has an inverse.  It is not necessary for the inverse to have
+a practical implementation.  It is sufficient that the inverse exist
+mathematically.
+
+A PRF is a Pseudo-Random Permutation if it is a Bijection and its
+domain_type is the same as its range_type.
+
+The four implemented PRFs are CopyAssignable, EqualityComparable,
+Streamable, Keyable, Seedable, Pseudo-Random Permutations with
+Integer Array ranges and Countable domains.  Hence, they satisfy the
+requirements of counter_based_engine and counter_based_urng.
+
+
+
+Differences from Random123
+--------------------------
+
+This code is inspired by the Random123 library, but there are
+significant differences.
+
+New terminology:  threefry<2, uint64_t> is a "Pseudo-Random Function"
+(PRF).  PRFs take a key_type as a constructor argument, and are
+bijections on their ctr_type.  Thus, instead of:
+
+   typedef r123::Threefry2x64 r123_t;
+   r123_t::ctr_type c;
+   r123_t::key_type k
+   r123_t::ctr_type r = r123_t(c, k)
+
+You now say:
+
+   typedef boost::random::threefry<2, uint64_t> prf_t;
+   prf_t::key_type k;
+   prf_t myprf(k);   
+   prf_t::domain_type c;
+   prf_t::range_type r = myprf(c);
+   // Or alternatively, (more reminiscent of Random123)
+   prf_t::range_type r2 = prf_t(k)(c);
+
+
+
+AESNI
+-----
+
+Use of AESNI is tricky because we want both compile-time and
+runtime control over whether AESNI is used.  The compile-time
+control is determined by BOOST_HAS_AESNI, which we assume will be
+set by some config file based on compiler-specific symbols
+(__AES__, __x86_64__, __ICC, __GNUC__) and possible user-overrides.
+
+But even if AESNI support is compiled in, we have to detect it and
+fall back to a software implementation at runtime if it's not
+available.  The check requires either an asm with GCC-compatible
+compilers or an intrinsic with MSVC-compatible compilers.
+
+Endianness is another complication.  The AESNI implementation only
+works on x86_64 platforms, so it is not endian-sensitive.  In fact,
+it *defines* how multi-byte quantities are to be interpreted.  In
+contrast, the software implementation has to be endian-aware.  The
+current implementation has not been tested with other endians, and
+hence is almost certainly broken.
+
+And finally, the AESNI intrinsics are *very* fast.  We don't want to
+weigh them down with lots of runtime checks.  With AESNI enabled, the
+runtime overhead should cost no more than a single conditional at the
+top of operator()(c).  The choice between hardware and software AES is
+controlled by a member data field, useAESNI, of the prf class.  If hw
+AES is compiled in, useAESNI is initialized by a runtime check of the
+CPU capabilities.  It can be changed with a mutator method.  If hw AES
+is not compiled in, useAESNI is initialized false and it is an error
+to try to set it to true.
+
+In detail/aes_impl.hpp, we implement two classes:
+ detail::hw128
+ detail::sw128
+
+with a common interface that minimally meets the needs of AES and ARS.
+The interface includes +=, ^= constructors from array<uintW, N>,
+aesenc, and aeskeygenassist primitives, etc.  The crucial functions in
+AES and ARS are then written with a template parameter that is
+assumed to provide the interface.
+
+An idiom like:
+#if BOOST_HAS_AESNI
+    if( useAESNI )
+        method<detail::hw128>(args);
+    else
+#endif
+        method<detail::sw128>(args);
+gives the desired compile-time and runtime control.
+
+
